@@ -2,11 +2,24 @@ const authService = require("../services/authService");
 
 const signup = async (req, res) => {
   try {
-    const result = await authService.signup(req.body);
+    const response = await authService.signup(req.body);
 
-    res.status(201).json(result);
+    return res.status(201).json(response);
   } catch (error) {
-    res.status(400).json({
+    return res.status(400).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+const login = async (req, res) => {
+  try {
+    const response = await authService.login(req.body);
+
+    return res.status(200).json(response);
+  } catch (error) {
+    return res.status(400).json({
       success: false,
       message: error.message,
     });
@@ -15,4 +28,5 @@ const signup = async (req, res) => {
 
 module.exports = {
   signup,
+  login,
 };
