@@ -1,25 +1,22 @@
+const AppError = require("../utils/AppError");
 const bcrypt = require("bcrypt");
 
 const User = require("../models/User");
 const generateToken = require("../utils/generateToken");
 
 const signup = async (userData) => {
-    
   const { fullName, email, password } = userData;
 
- if (
-  !fullName?.trim() ||
-  !email?.trim() ||
-  !password?.trim()
-) {
-  throw new Error("All fields are required.");
-}
+  // Validate input
+  if (!fullName?.trim() || !email?.trim() || !password?.trim()) {
+    throw new AppError("All fields are required.", 400);
+  }
 
   // Check if user already exists
   const existingUser = await User.findOne({ email });
 
   if (existingUser) {
-    throw new Error("User already exists.");
+    throw new AppError("User already exists.", 409);
   }
 
   // Hash password
@@ -47,26 +44,26 @@ const signup = async (userData) => {
   };
 };
 
-
 const login = async (userData) => {
   const { email, password } = userData;
 
+  // Validate input
   if (!email?.trim() || !password?.trim()) {
-  throw new Error("Email and password are required.");
-}
+    throw new AppError("Email and password are required.", 400);
+  }
 
   // Find user
   const user = await User.findOne({ email });
 
   if (!user) {
-    throw new Error("Invalid email or password.");
+    throw new AppError("Invalid email or password.", 401);
   }
 
   // Compare password
   const isPasswordCorrect = await bcrypt.compare(password, user.password);
 
   if (!isPasswordCorrect) {
-    throw new Error("Invalid email or password.");
+    throw new AppError("Invalid email or password.", 401);
   }
 
   // Generate JWT
