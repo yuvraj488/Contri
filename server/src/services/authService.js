@@ -1,9 +1,40 @@
+const bcrypt = require("bcrypt");
+
+const User = require("../models/User");
+const generateToken = require("../utils/generateToken");
+
 const signup = async (userData) => {
-    console.log(userData);
+  const { fullName, email, password } = userData;
+
+  // Check if user already exists
+  const existingUser = await User.findOne({ email });
+
+  if (existingUser) {
+    throw new Error("User already exists.");
+  }
+
+  // Hash password
+  const hashedPassword = await bcrypt.hash(password, 10);
+
+  // Create user
+  const user = await User.create({
+    fullName,
+    email,
+    password: hashedPassword,
+  });
+
+  // Generate JWT
+  const token = generateToken(user._id);
+
   return {
     success: true,
-    message: "Signup service reached.",
-    data: userData,
+    message: "Signup successful.",
+    token,
+    user: {
+      id: user._id,
+      fullName: user.fullName,
+      email: user.email,
+    },
   };
 };
 
