@@ -34,6 +34,28 @@ const createGroup = async (groupData, userId) => {
   };
 };
 
+const getMyGroups = async (userId) => {
+  const groups = await Group.find(
+    {
+      members: userId,
+      isActive: true,
+    },
+    "name description inviteCode members"
+  );
+
+  return {
+    success: true,
+    groups: groups.map((group) => ({
+      id: group._id,
+      name: group.name,
+      description: group.description,
+      inviteCode: group.inviteCode,
+      memberCount: group.members.length,
+    })),
+  };
+};
+
 module.exports = {
   createGroup,
+  getMyGroups,
 };
