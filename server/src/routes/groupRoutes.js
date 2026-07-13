@@ -17,4 +17,10 @@ router.get(
   groupController.getMyGroups
 );
 
+router.post(
+  "/join",
+  authMiddleware,
+  groupController.joinGroup
+);
+
 module.exports = router;

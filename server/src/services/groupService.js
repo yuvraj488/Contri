@@ -55,7 +55,51 @@ const getMyGroups = async (userId) => {
   };
 };
 
+const joinGroup = async (inviteCode, userId) => {
+  // Validate input
+  if (!inviteCode?.trim()) {
+    throw new AppError("Invite code is required.", 400);
+  }
+
+  // Find active group
+  const group = await Group.findOne({
+    inviteCode: inviteCode.toUpperCase(),
+    isActive: true,
+  });
+
+  if (!group) {
+    throw new AppError("Invalid invite code.", 404);
+  }
+
+  // Check if user is already a member
+  const isMember = group.members.some(
+    (member) => member.toString() === userId.toString()
+  );
+
+  if (isMember) {
+    throw new AppError("You are already a member of this group.", 409);
+  }
+
+  // Add member
+  group.members.push(userId);
+
+  await group.save();
+
+  return {
+    success: true,
+    message: "Joined group successfully.",
+    group: {
+      id: group._id,
+      name: group.name,
+      description: group.description,
+      inviteCode: group.inviteCode,
+      memberCount: group.members.length,
+    },
+  };
+};
+
 module.exports = {
   createGroup,
   getMyGroups,
+  joinGroup,
 };
