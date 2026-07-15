@@ -6,6 +6,8 @@ const groupRoutes = require("./routes/groupRoutes");
 
 const errorMiddleware = require("./middlewares/errorMiddleware");
 
+const expenseRoutes = require("./routes/expenseRoutes");
+
 const app = express();
 
 /* -------------------- Global Middleware -------------------- */
@@ -24,7 +26,7 @@ app.get("/", (req, res) => {
 
 app.use("/api/auth", authRoutes);
 app.use("/api/groups", groupRoutes);
-
+app.use("/api/expenses", expenseRoutes);
 /* ------------------- Global Error Handler ------------------ */
 
 app.use(errorMiddleware);
