@@ -1,33 +1,47 @@
-const asyncHandler = require("../utils/asyncHandler");
 const groupService = require("../services/groupService");
+const groupDashboardService = require("../services/groupDashboardService");
 
-const createGroup = asyncHandler(async (req, res) => {
-  const response = await groupService.createGroup(
-    req.body,
-    req.user._id
-  );
+const createGroup = async (req, res, next) => {
+  try {
+    const result = await groupService.createGroup(
+      req.body,
+      req.user.id
+    );
 
-  return res.status(201).json(response);
-});
+    res.status(201).json(result);
+  } catch (error) {
+    next(error);
+  }
+};
 
-const getMyGroups = asyncHandler(async (req, res) => {
-  const response = await groupService.getMyGroups(req.user._id);
+const getMyGroups = async (req, res, next) => {
+  try {
+    const result = await groupService.getMyGroups(
+      req.user.id
+    );
 
-  return res.status(200).json(response);
-});
+    res.status(200).json(result);
+  } catch (error) {
+    next(error);
+  }
+};
 
-const joinGroup = asyncHandler(async (req, res) => {
-  const response = await groupService.joinGroup(
-    req.body.inviteCode,
-    req.user._id
-  );
+const getGroupDashboard = async (req, res, next) => {
+  try {
+    const result =
+      await groupDashboardService.getGroupDashboard(
+        req.params.groupId,
+        req.user.id
+      );
 
-  return res.status(200).json(response);
-});
-
+    res.status(200).json(result);
+  } catch (error) {
+    next(error);
+  }
+};
 
 module.exports = {
   createGroup,
   getMyGroups,
-  joinGroup,
+  getGroupDashboard,
 };
