@@ -3,10 +3,9 @@ const cors = require("cors");
 
 const authRoutes = require("./routes/authRoutes");
 const groupRoutes = require("./routes/groupRoutes");
-
 const errorMiddleware = require("./middlewares/errorMiddleware");
-
 const expenseRoutes = require("./routes/expenseRoutes");
+const settlementRoutes = require("./routes/settlementRoutes");
 
 const app = express();
 
@@ -27,6 +26,7 @@ app.get("/", (req, res) => {
 app.use("/api/auth", authRoutes);
 app.use("/api/groups", groupRoutes);
 app.use("/api/expenses", expenseRoutes);
+app.use("/api", settlementRoutes);
 /* ------------------- Global Error Handler ------------------ */
 
 app.use(errorMiddleware);

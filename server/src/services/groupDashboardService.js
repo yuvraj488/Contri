@@ -1,8 +1,8 @@
 const Expense = require("../models/Expense");
 const Group = require("../models/Group");
 const AppError = require("../utils/AppError");
-const calculateBalances = require("../utils/calculateBalances");
-const generateSettlements = require("../utils/generateSettlements");
+const Settlement = require("../models/Settlement");
+const generateSettlementPlan = require("../utils/generateSettlementPlan");
 
 const getGroupDashboard = async (groupId, userId) => {
   // Find Group
@@ -37,11 +37,17 @@ const getGroupDashboard = async (groupId, userId) => {
     .populate("participants", "fullName")
     .sort({ createdAt: -1 });
 
-  // Calculate Balances
-  const balanceMap = calculateBalances(expenses);
+  const settlementHistory = await Settlement.find({
+  group: groupId,
+})
+  .populate("paidBy", "fullName")
+  .populate("receivedBy", "fullName")
+  .sort({ createdAt: -1 });
 
-  // Generate Settlements
-  const settlements = generateSettlements(balanceMap);
+  const settlements = generateSettlementPlan(
+  expenses,
+  settlementHistory
+);
 
   // Summary
   const toPay = [];
