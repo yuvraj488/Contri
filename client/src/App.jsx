@@ -1,25 +1,7 @@
-import logo from "./assets/logo.svg";
+import Login from "./pages/Login/Login";
 
 function App() {
-    return (
-        <div
-            style={{
-                height: "100vh",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                background: "var(--background)"
-            }}
-        >
-            <img
-                src={logo}
-                alt="Contri"
-                style={{
-                    width: "420px"
-                }}
-            />
-        </div>
-    );
+  return <Login />;
 }
 
 export default App;
