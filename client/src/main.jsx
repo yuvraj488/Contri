@@ -1,16 +1,16 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
+import { BrowserRouter } from "react-router-dom";
+
+import "@fontsource/manrope";
+import "./styles/tailwind.css";
 
 import App from "./App";
 
-import "@fontsource/manrope";
-
-import "./styles/tailwind.css";
-import "./styles/colors.css";
-import "./styles/global.css";
-
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <App />
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
   </React.StrictMode>
 );
