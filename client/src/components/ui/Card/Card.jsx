@@ -1,16 +1,26 @@
-function Card({ children, className = "" }) {
+function Card({
+  title,
+  children,
+  className = "",
+}) {
   return (
     <div
       className={`
-        rounded-3xl
+        rounded-[32px]
         border
-        border-[var(--border)]
+        border-gray-200
         bg-white
-        p-8
-        shadow-lg
+        shadow-[0_20px_60px_rgba(15,23,42,0.08)]
+        p-10
         ${className}
       `}
     >
+      {title && (
+        <h2 className="mb-8 text-3xl font-bold text-[var(--text)]">
+          {title}
+        </h2>
+      )}
+
       {children}
     </div>
   );
