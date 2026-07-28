@@ -4,15 +4,18 @@ import { login } from "@/services/authService";
 import Logo from "@/assets/logo.svg";
 import PageWrapper from "@/components/layout/PageWrapper";
 import { Link } from "react-router-dom";
+import { useAuth } from "@/context/AuthContext";
+import LoadingButton from "@/components/ui/LoadingButton";
+import { useNavigate } from "react-router-dom";
 
 export default function Login() {
     const [showPassword, setShowPassword] = useState(false);
-
+    const { login: loginUser } = useAuth();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-
+const [loading, setLoading] = useState(false);
     const [errors, setErrors] = useState({});
-
+const navigate = useNavigate();
     const validateForm = () => {
         const newErrors = {};
 
@@ -33,25 +36,33 @@ export default function Login() {
         return Object.keys(newErrors).length === 0;
     };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+   const handleSubmit = async (e) => {
+  e.preventDefault();
 
-        if (!validateForm()) return;
-try {
+  if (!validateForm()) return;
+
+  setLoading(true);
+
+  try {
     const response = await login(email, password);
 
     localStorage.setItem("token", response.token);
 
-    console.log("Login Successful");
+    loginUser(response.user);
 
-    console.log(response);
+    navigate("/dashboard");
 
-} catch (error) {
+    // Later we'll replace this with:
+    // navigate("/dashboard");
 
-    console.error(error.response?.data?.message || error.message);
-
-}
-    };
+  } catch (error) {
+    console.error(
+      error.response?.data?.message || error.message
+    );
+  } finally {
+    setLoading(false);
+  }
+};
 
     return (
         <PageWrapper>
@@ -178,13 +189,13 @@ try {
 
                         {/* Login Button */}
 
-                        <button
-                            type="submit"
-                            className="mt-8 flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 text-sm font-semibold text-white transition-colors hover:bg-emerald-700"
-                        >
-                            Sign In
-                            <ArrowRight size={18} />
-                        </button>
+                        <LoadingButton
+    type="submit"
+    loading={loading}
+    text="Sign In"
+    loadingText="Signing In..."
+    className="mt-8"
+/>
 
                     </form>
 

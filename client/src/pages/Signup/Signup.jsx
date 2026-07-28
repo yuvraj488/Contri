@@ -1,21 +1,21 @@
 import { ArrowRight, Eye, EyeOff, Lock, Mail, User } from "lucide-react";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate} from "react-router-dom";
 
 import Logo from "@/assets/logo.svg";
 import PageWrapper from "@/components/layout/PageWrapper";
 import { signup } from "@/services/authService";
-import { useNavigate } from "react-router-dom";
-
+import { useAuth } from "@/context/AuthContext";
+import LoadingButton from "@/components/ui/LoadingButton";
 export default function Signup() {
     const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
-
+const [loading, setLoading] = useState(false);
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-
+  const { login: loginUser } = useAuth();
   const [errors, setErrors] = useState({});
 
   const validateForm = () => {
@@ -47,27 +47,33 @@ export default function Signup() {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    if (!validateForm()) return;
+  if (!validateForm()) return;
 
-    try {
-      const response = await signup({
-        fullName,
-        email,
-        password,
-      });
+  setLoading(true);
 
-      localStorage.setItem("token", response.token);
+  try {
+    const response = await signup({
+      fullName,
+      email,
+      password,
+    });
 
-      navigate("/");
+    localStorage.setItem("token", response.token);
 
-    } catch (error) {
-      console.error(
-        error.response?.data?.message || error.message
-      );
-    }
-  };
+    loginUser(response.user);
+
+    navigate("/dashboard");
+
+  } catch (error) {
+    console.error(
+      error.response?.data?.message || error.message
+    );
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <PageWrapper>
@@ -229,13 +235,13 @@ export default function Signup() {
 
             </div>
 
-            <button
-              type="submit"
-              className="mt-8 flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 text-white font-semibold"
-            >
-              Create Account
-              <ArrowRight size={18}/>
-            </button>
+            <LoadingButton
+    type="submit"
+    loading={loading}
+    text="Create Account"
+    loadingText="Creating Account..."
+    className="mt-8"
+/>
 
           </form>
 
@@ -244,7 +250,7 @@ export default function Signup() {
             Already have an account?
 
             <Link
-              to="/"
+              to="/login"
               className="ml-2 font-semibold text-emerald-600"
             >
               Sign In
