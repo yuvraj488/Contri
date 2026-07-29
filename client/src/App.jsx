@@ -3,10 +3,12 @@ import { Routes, Route } from "react-router-dom";
 import Login from "@/pages/Login/Login";
 import Signup from "@/pages/Signup/Signup";
 import Dashboard from "@/pages/Dashboard/Dashboard";
-
+import CreateGroup from "@/pages/Groups/CreateGroup";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import HomeRedirect from "@/components/auth/HomeRedirect";
 import PublicRoute from "@/components/auth/PublicRoute";
+import GroupCreated from "@/pages/Groups/GroupCreated";
+
 function App() {
   return (
     <Routes>
@@ -41,7 +43,24 @@ function App() {
           </ProtectedRoute>
         }
       />
+      <Route
+  path="/groups/create"
+  element={
+    <ProtectedRoute>
+      <CreateGroup />
+    </ProtectedRoute>
+  }
+/>
+<Route
+  path="/groups/created"
+  element={
+    <ProtectedRoute>
+      <GroupCreated />
+    </ProtectedRoute>
+  }
+/>
     </Routes>
+    
   );
 }
 
