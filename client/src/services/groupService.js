@@ -8,3 +8,9 @@ export const createGroup = async ({ name, description }) => {
 
   return response.data;
 };
+
+export const getMyGroups = async () => {
+  const response = await api.get("/groups");
+
+  return response.data;
+};

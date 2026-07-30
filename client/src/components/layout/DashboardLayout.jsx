@@ -1,6 +1,8 @@
 import Logo from "@/assets/logo.svg";
-
+import { useAuth } from "@/context/AuthContext";
+import ProfileDropdown from "@/components/layout/ProfileDropdown";
 export default function DashboardLayout({ children }) {
+  const { user } = useAuth();
   return (
     <div className="min-h-screen bg-stone-50">
       {/* Navbar */}
@@ -10,12 +12,10 @@ export default function DashboardLayout({ children }) {
           <img
             src={Logo}
             alt="Contri"
-            className="h-10 w-auto"
+            className="h-20 w-auto"
           />
 
-          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-100 text-sm font-semibold text-emerald-700">
-            Y
-          </div>
+          <ProfileDropdown />
         </div>
       </header>
 

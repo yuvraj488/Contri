@@ -19,6 +19,11 @@ router.get(
 );
 
 // Group Dashboard
+router.post(
+  "/join",
+  authMiddleware,
+  groupController.joinGroup
+);
 router.get(
   "/:groupId",
   authMiddleware,

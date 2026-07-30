@@ -40,8 +40,22 @@ const getGroupDashboard = async (req, res, next) => {
   }
 };
 
+const joinGroup = async (req, res, next) => {
+  try {
+    const result = await groupService.joinGroup(
+      req.body.inviteCode,
+      req.user.id
+    );
+
+    res.status(200).json(result);
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   createGroup,
   getMyGroups,
   getGroupDashboard,
+  joinGroup,
 };

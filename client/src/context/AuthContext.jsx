@@ -6,12 +6,10 @@ import {
 } from "react";
 
 import { getProfile } from "@/services/authService";
-import { useNavigate } from "react-router-dom";
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
-const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
 
   const login = (userData) => {
@@ -20,10 +18,7 @@ const navigate = useNavigate();
 
   const logout = () => {
   localStorage.removeItem("token");
-
   setUser(null);
-
-  navigate("/login", { replace: true });
 };
 
   useEffect(() => {

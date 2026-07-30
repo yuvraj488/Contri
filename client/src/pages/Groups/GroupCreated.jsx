@@ -67,7 +67,9 @@ export default function GroupCreated() {
 
           <button
             onClick={() =>
-              navigate(`/groups/${group._id}`)
+              navigate("/dashboard", {
+  replace: true,
+})
             }
             className="mt-8 flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 font-semibold text-white transition hover:bg-emerald-700"
           >
