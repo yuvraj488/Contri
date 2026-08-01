@@ -128,12 +128,13 @@ const getGroupDashboard = async (groupId, userId) => {
     success: true,
 
     group: {
-      id: group._id,
-      name: group.name,
-      description: group.description,
-      memberCount: groupMembers.length,
-      createdAt: group.createdAt,
-    },
+  id: group._id,
+  name: group.name,
+  description: group.description,
+  inviteCode: group.inviteCode,
+  memberCount: groupMembers.length,
+  createdAt: group.createdAt,
+},
 
     summary: {
       toPay: {

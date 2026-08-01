@@ -14,10 +14,17 @@ export const getMyGroups = async () => {
 
   return response.data;
 };
+
 export const joinGroup = async (inviteCode) => {
   const response = await api.post("/groups/join", {
     inviteCode,
   });
+
+  return response.data;
+};
+
+export const getGroupDashboard = async (groupId) => {
+  const response = await api.get(`/groups/${groupId}`);
 
   return response.data;
 };
