@@ -3,9 +3,11 @@ import { useParams } from "react-router-dom";
 
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import { getGroupDashboard } from "@/services/groupService";
-
+import BalanceSummary from "@/components/group/BalanceSummary";
 import GroupHeader from "@/components/group/GroupHeader";
 import AddExpenseButton from "@/components/group/AddExpenseButton";
+import ExpenseList from "@/components/group/ExpenseList";
+
 
 export default function GroupDetails() {
   const { groupId } = useParams();
@@ -55,7 +57,15 @@ export default function GroupDetails() {
   <DashboardLayout>
     <GroupHeader group={groupData.group} />
 
-    <AddExpenseButton />
+<AddExpenseButton />
+
+<BalanceSummary
+  summary={groupData.summary}
+/>
+
+<ExpenseList
+  expenses={groupData.expenses}
+/>
   </DashboardLayout>
 );
 }

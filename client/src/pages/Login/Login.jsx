@@ -1,13 +1,16 @@
 import { ArrowRight, Eye, EyeOff, Lock, Mail } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { login } from "@/services/authService";
 import Logo from "@/assets/logo.svg";
 import PageWrapper from "@/components/layout/PageWrapper";
-import { Link } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import LoadingButton from "@/components/ui/LoadingButton";
-import { useNavigate } from "react-router-dom";
-
+import { useNavigate, useLocation, Link } from "react-router-dom";
+import {
+  showError,
+  showSuccess,
+  showWarning,
+} from "@/utils/toast";
 export default function Login() {
     const [showPassword, setShowPassword] = useState(false);
     const { login: loginUser } = useAuth();
@@ -16,6 +19,19 @@ export default function Login() {
 const [loading, setLoading] = useState(false);
     const [errors, setErrors] = useState({});
 const navigate = useNavigate();
+const location = useLocation();
+
+const sessionExpired =
+  new URLSearchParams(location.search).get("reason") ===
+  "session-expired";
+  useEffect(() => {
+  if (sessionExpired) {
+    showWarning(
+      "Session Expired",
+      "Please sign in again."
+    );
+  }
+}, [sessionExpired]);
     const validateForm = () => {
         const newErrors = {};
 
@@ -50,15 +66,24 @@ const navigate = useNavigate();
 
     loginUser(response.user);
 
-    navigate("/dashboard");
+    showSuccess(
+  "Welcome Back",
+  `Good to see you again, ${response.user.fullName}.`
+);
+
+navigate("/dashboard", {
+  replace: true,
+});
 
     // Later we'll replace this with:
     // navigate("/dashboard");
 
   } catch (error) {
-    console.error(
-      error.response?.data?.message || error.message
-    );
+    showError(
+  "Sign In Failed",
+  error.response?.data?.message ||
+    "Please try again."
+);
   } finally {
     setLoading(false);
   }
@@ -87,7 +112,11 @@ const navigate = useNavigate();
                     </div>
 
                     {/* Card */}
-
+{sessionExpired && (
+  <div className="mb-5 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800">
+    Your session has expired. Please sign in again.
+  </div>
+)}
                     <form
                         onSubmit={handleSubmit}
                         className="rounded-3xl border border-neutral-200 bg-white p-8"

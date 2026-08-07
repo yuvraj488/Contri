@@ -1,7 +1,10 @@
 import { ArrowRight, Eye, EyeOff, Lock, Mail, User } from "lucide-react";
 import { useState } from "react";
 import { Link, useNavigate} from "react-router-dom";
-
+import {
+  showError,
+  showSuccess,
+} from "@/utils/toast";
 import Logo from "@/assets/logo.svg";
 import PageWrapper from "@/components/layout/PageWrapper";
 import { signup } from "@/services/authService";
@@ -46,7 +49,7 @@ const [loading, setLoading] = useState(false);
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = async (e) => {
+const handleSubmit = async (e) => {
   e.preventDefault();
 
   if (!validateForm()) return;
@@ -55,8 +58,8 @@ const [loading, setLoading] = useState(false);
 
   try {
     const response = await signup({
-      fullName,
-      email,
+      fullName: fullName.trim(),
+      email: email.trim(),
       password,
     });
 
@@ -64,11 +67,19 @@ const [loading, setLoading] = useState(false);
 
     loginUser(response.user);
 
-    navigate("/dashboard");
+    showSuccess(
+      "Account Created",
+      `Welcome to Contri, ${response.user.fullName}.`
+    );
 
+    navigate("/dashboard", {
+      replace: true,
+    });
   } catch (error) {
-    console.error(
-      error.response?.data?.message || error.message
+    showError(
+      "Couldn't Create Account",
+      error.response?.data?.message ||
+        "Please try again."
     );
   } finally {
     setLoading(false);
@@ -116,11 +127,12 @@ const [loading, setLoading] = useState(false);
                 />
 
                 <input
-                  value={fullName}
-                  onChange={(e)=>setFullName(e.target.value)}
-                  placeholder="John Doe"
-                  className="w-full bg-transparent outline-none"
-                />
+  autoFocus
+  value={fullName}
+  onChange={(e) => setFullName(e.target.value)}
+  placeholder="John Doe"
+  className="w-full bg-transparent outline-none"
+/>
 
               </div>
 

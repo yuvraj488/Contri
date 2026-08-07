@@ -26,6 +26,15 @@ const expenseSchema = new mongoose.Schema(
       required: true,
     },
 
+    // Equal or Custom split
+    splitType: {
+      type: String,
+      enum: ["equal", "custom"],
+      default: "equal",
+      required: true,
+    },
+
+    // Used for equal split
     participants: {
       type: [
         {
@@ -38,6 +47,26 @@ const expenseSchema = new mongoose.Schema(
         validator: (participants) => participants.length > 0,
         message: "At least one participant is required.",
       },
+    },
+
+    // Used only when splitType === "custom"
+    customSplits: {
+      type: [
+        {
+          member: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User",
+            required: true,
+          },
+
+          amount: {
+            type: Number,
+            required: true,
+            min: 0,
+          },
+        },
+      ],
+      default: [],
     },
 
     notes: {

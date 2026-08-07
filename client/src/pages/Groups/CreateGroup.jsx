@@ -4,6 +4,11 @@ import { useNavigate } from "react-router-dom";
 
 import { createGroup } from "@/services/groupService";
 import PageWrapper from "@/components/layout/PageWrapper";
+import LoadingButton from "@/components/ui/LoadingButton";
+import {
+  showSuccess,
+  showError,
+} from "@/utils/toast";
 
 export default function CreateGroup() {
   const navigate = useNavigate();
@@ -47,18 +52,22 @@ export default function CreateGroup() {
         description: description.trim(),
       });
 
+      showSuccess(
+        "Group Created",
+        `${response.group.name} is ready.`
+      );
+
       navigate("/groups/created", {
-  state: {
-    group: response.group,
-  },
-});
-
-      // We'll replace this with the success page next
-      // navigate("/groups/success");
-
+        replace: true,
+        state: {
+          group: response.group,
+        },
+      });
     } catch (error) {
-      console.error(
-        error.response?.data?.message || error.message
+      showError(
+        "Couldn't Create Group",
+        error.response?.data?.message ||
+          "Please try again."
       );
     } finally {
       setLoading(false);
@@ -73,7 +82,7 @@ export default function CreateGroup() {
 
         <button
           onClick={() => navigate(-1)}
-          className="mb-8 flex items-center gap-2 text-sm font-medium text-neutral-600 hover:text-stone-900"
+          className="mb-8 flex items-center gap-2 text-sm font-medium text-neutral-600 transition hover:text-stone-900"
         >
           <ArrowLeft size={18} />
           Back
@@ -103,6 +112,7 @@ export default function CreateGroup() {
             </label>
 
             <input
+              autoFocus
               type="text"
               value={groupName}
               onChange={(e) => setGroupName(e.target.value)}
@@ -130,7 +140,9 @@ export default function CreateGroup() {
             <textarea
               rows={4}
               value={description}
-              onChange={(e) => setDescription(e.target.value)}
+              onChange={(e) =>
+                setDescription(e.target.value)
+              }
               placeholder="College trip in December..."
               className="w-full resize-none rounded-xl border border-neutral-200 px-4 py-3 outline-none transition focus:border-emerald-600"
             />
@@ -144,15 +156,13 @@ export default function CreateGroup() {
 
           {/* Button */}
 
-          <button
+          <LoadingButton
             type="submit"
-            disabled={loading}
-            className="mt-8 flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 font-semibold text-white transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-60"
-          >
-            {loading ? "Creating..." : "Create Group"}
-
-            {!loading && <ArrowRight size={18} />}
-          </button>
+            loading={loading}
+            text="Create Group"
+            loadingText="Creating Group..."
+            className="mt-8"
+          />
         </form>
       </div>
     </PageWrapper>

@@ -1,9 +1,14 @@
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import PageWrapper from "@/components/layout/PageWrapper";
+import LoadingButton from "@/components/ui/LoadingButton";
 import { joinGroup } from "@/services/groupService";
+import {
+  showSuccess,
+  showError,
+} from "@/utils/toast";
 
 export default function JoinGroup() {
   const navigate = useNavigate();
@@ -12,7 +17,6 @@ export default function JoinGroup() {
   const [loading, setLoading] = useState(false);
 
   const [errors, setErrors] = useState({});
-  const [serverError, setServerError] = useState("");
 
   const validateForm = () => {
     const newErrors = {};
@@ -32,18 +36,25 @@ export default function JoinGroup() {
     if (!validateForm()) return;
 
     setLoading(true);
-    setServerError("");
 
     try {
-      await joinGroup(inviteCode.trim().toUpperCase());
+      const response = await joinGroup(
+        inviteCode.trim().toUpperCase()
+      );
+
+      showSuccess(
+        "Joined Group",
+        `Welcome to ${response.group.name}.`
+      );
 
       navigate("/dashboard", {
         replace: true,
       });
-
     } catch (error) {
-      setServerError(
-        error.response?.data?.message || "Something went wrong."
+      showError(
+        "Couldn't Join Group",
+        error.response?.data?.message ||
+          "Please try again."
       );
     } finally {
       setLoading(false);
@@ -58,7 +69,7 @@ export default function JoinGroup() {
 
         <button
           onClick={() => navigate(-1)}
-          className="mb-8 flex items-center gap-2 text-sm font-medium text-neutral-600 hover:text-stone-900"
+          className="mb-8 flex items-center gap-2 text-sm font-medium text-neutral-600 transition hover:text-stone-900"
         >
           <ArrowLeft size={18} />
           Back
@@ -85,16 +96,15 @@ export default function JoinGroup() {
           </label>
 
           <input
+            autoFocus
             value={inviteCode}
             onChange={(e) => {
-              setInviteCode(e.target.value.toUpperCase());
+              setInviteCode(
+                e.target.value.toUpperCase()
+              );
 
               if (errors.inviteCode) {
                 setErrors({});
-              }
-
-              if (serverError) {
-                setServerError("");
               }
             }}
             placeholder="ABC123"
@@ -107,21 +117,13 @@ export default function JoinGroup() {
             </p>
           )}
 
-          {serverError && (
-            <p className="mt-4 text-sm text-red-500">
-              {serverError}
-            </p>
-          )}
-
-          <button
+          <LoadingButton
             type="submit"
-            disabled={loading}
-            className="mt-8 flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 font-semibold text-white transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-60"
-          >
-            {loading ? "Joining..." : "Join Group"}
-
-            {!loading && <ArrowRight size={18} />}
-          </button>
+            loading={loading}
+            text="Join Group"
+            loadingText="Joining Group..."
+            className="mt-8"
+          />
         </form>
       </div>
     </PageWrapper>

@@ -10,6 +10,7 @@ import PublicRoute from "@/components/auth/PublicRoute";
 import GroupCreated from "@/pages/Groups/GroupCreated";
 import GroupDetails from "@/pages/Groups/GroupDetails";
 import JoinGroup from "@/pages/Groups/JoinGroup";
+import AddExpense from "@/pages/Expenses/AddExpense";
 
 function App() {
   return (
@@ -83,6 +84,14 @@ function App() {
   }
 />
 
+<Route
+  path="/groups/:groupId/add-expense"
+  element={
+    <ProtectedRoute>
+      <AddExpense />
+    </ProtectedRoute>
+  }
+/>
 
 </Routes>
     
